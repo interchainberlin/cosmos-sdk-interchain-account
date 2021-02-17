@@ -44,8 +44,7 @@ func NewRegisterIBCAccountTxCmd() *cobra.Command {
 		Use:  "register [source_port] [source_channel] [salt]",
 		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
@@ -79,8 +78,8 @@ func NewRegisterIBCAccountTxCmd() *cobra.Command {
 
 				if !timeoutHeight.IsZero() {
 					absoluteHeight := height
-					absoluteHeight.VersionNumber += timeoutHeight.VersionNumber
-					absoluteHeight.VersionHeight += timeoutHeight.VersionHeight
+					absoluteHeight.RevisionNumber += timeoutHeight.RevisionNumber
+					absoluteHeight.RevisionHeight += timeoutHeight.RevisionHeight
 					timeoutHeight = absoluteHeight
 				}
 
@@ -116,8 +115,7 @@ func NewSendTxCmd() *cobra.Command {
 		Use:  "send [source_port] [source_channel] [ibc_account_address] [to_address] [amount]",
 		Args: cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
@@ -131,7 +129,7 @@ func NewSendTxCmd() *cobra.Command {
 				return err
 			}
 
-			coins, err := sdk.ParseCoins(args[4])
+			coins, err := sdk.ParseCoinsNormalized(args[4])
 			if err != nil {
 				return err
 			}
@@ -165,8 +163,8 @@ func NewSendTxCmd() *cobra.Command {
 
 				if !timeoutHeight.IsZero() {
 					absoluteHeight := height
-					absoluteHeight.VersionNumber += timeoutHeight.VersionNumber
-					absoluteHeight.VersionHeight += timeoutHeight.VersionHeight
+					absoluteHeight.RevisionNumber += timeoutHeight.RevisionNumber
+					absoluteHeight.RevisionHeight += timeoutHeight.RevisionHeight
 					timeoutHeight = absoluteHeight
 				}
 

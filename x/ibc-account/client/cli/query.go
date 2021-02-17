@@ -29,8 +29,7 @@ func GetIBCAccountCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use: "ibcaccount [address_or_data] [port] [channel]",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
@@ -44,7 +43,7 @@ func GetIBCAccountCmd() *cobra.Command {
 					return err
 				}
 
-				return clientCtx.PrintOutput(res.Account)
+				return clientCtx.PrintProto(res.Account)
 			}
 
 			res, err := queryClient.IBCAccountFromData(context.Background(), &types.QueryIBCAccountFromDataRequest{Data: args[0], Port: args[1], Channel: args[2]})
@@ -52,7 +51,7 @@ func GetIBCAccountCmd() *cobra.Command {
 				return err
 			}
 
-			return clientCtx.PrintOutput(res.Account)
+			return clientCtx.PrintProto(res.Account)
 		},
 	}
 
